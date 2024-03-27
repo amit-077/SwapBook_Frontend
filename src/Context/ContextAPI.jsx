@@ -1,6 +1,7 @@
 import { useDisclosure } from "@chakra-ui/react";
 import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
+import url from "../constant";
 
 export const UserContext = createContext();
 
@@ -19,7 +20,7 @@ const UserProvider = ({ children }) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
-        const data = await axios.post("/updateLocation", {
+        const data = await axios.post(`${url}/updateLocation`, {
           latitude,
           longitude,
         });

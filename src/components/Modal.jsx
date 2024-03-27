@@ -32,6 +32,7 @@ import {
 
 import axios from "axios";
 import { UserContext } from "../Context/ContextAPI";
+import url from "../constant";
 
 const ShowModal = () => {
   const toast = useToast();
@@ -106,7 +107,7 @@ const ShowModal = () => {
   const registerUser = async () => {
     setSignupLoading(true);
     try {
-      let data = await axios.post("/register", { signupUser });
+      let data = await axios.post(`${url}/register`, { signupUser });
       console.log(data);
       if (data.status === 201) {
         setShowOTP(true);
@@ -138,7 +139,7 @@ const ShowModal = () => {
   const signinUser = async () => {
     setLoginLoading(true);
     try {
-      let data = await axios.post("/login", { loginUser });
+      let data = await axios.post(`${url}/login`, { loginUser });
       if (data.status === 200) {
         console.log(data.data.userExists);
         data.data.userExists.password = undefined;

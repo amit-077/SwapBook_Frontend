@@ -37,6 +37,7 @@ import {
 import ItemCard from "./ItemCard";
 import axios from "axios";
 import Loader from "./utils/Loader";
+import url from "../constant";
 
 const BuyBook = () => {
   const [sliderValue1, setSliderValue1] = useState(50);
@@ -55,7 +56,7 @@ const BuyBook = () => {
   //   const getAllBooks = async () => {
   //     setLoading(true);
   //     try {
-  //       let data = await axios.get("/getAllBooks");
+  //       let data = await axios.get(`${url}/getAllBooks`);
   //       setBooksArr(data.data);
   //     } catch (e) {
   //       console.log(e);
@@ -69,7 +70,7 @@ const BuyBook = () => {
   // Get the current user to add wishlist books to his collection. Get updated user, not local storage wala user.
   // useEffect(() => {
   //   const getWishlistBooks = async () => {
-  //     const data = await axios.post("/getWishlist", { populate: false });
+  //     const data = await axios.post(`${url}/getWishlist`, { populate: false });
   //     setWishlistArr(data.data.wishlist);
   //   };
 
@@ -109,13 +110,13 @@ const BuyBook = () => {
     });
 
   const sortBooks = async (sort) => {
-    const data = await axios.post("/sortBooks", { sortQuery: sort });
+    const data = await axios.post(`${url}/sortBooks`, { sortQuery: sort });
     setBooksArr(data.data);
   };
 
   const setPriceRange = async () => {
     setLoading(true);
-    let data = await axios.post("/price", {
+    let data = await axios.post(`${url}/price`, {
       low: sliderValue1,
       high: sliderValue2,
     });
@@ -127,7 +128,7 @@ const BuyBook = () => {
     const bookCondition = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.post("/bookCondition", { bookCond });
+        const { data } = await axios.post(`${url}/bookCondition`, { bookCond });
         setBooksArr(data);
         setLoading(false);
       } catch (e) {

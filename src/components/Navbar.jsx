@@ -29,6 +29,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { UserContext } from "../Context/ContextAPI";
 import axios from "axios";
 import ShowModal from "./Modal";
+import url from "../constant";
 
 const Navbar = () => {
   const { user, setUser, isOpen, onClose, onOpen } = useContext(UserContext);
@@ -87,7 +88,7 @@ const Navbar = () => {
   //
 
   const logoutUser = async () => {
-    let data = await axios.get("/logout");
+    let data = await axios.get(`${url}/logout`);
     if (data.status === 200) {
       localStorage.removeItem("SwapBook");
       setUser({});

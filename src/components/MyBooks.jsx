@@ -2,6 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import axios from "axios";
+import url from "../constant";
 
 const MyBooks = () => {
   const [myBooksArr, setMyBooksArr] = useState([]);
@@ -10,7 +11,7 @@ const MyBooks = () => {
     const getMyBooks = async () => {
       try {
         console.log("Called");
-        const { data } = await axios.get("/getMyBooks");
+        const { data } = await axios.get(`${url}/getMyBooks`);
         setMyBooksArr(data);
       } catch (e) {
         console.log(e);

@@ -2,6 +2,7 @@ import { Box, Button, Image, Tag, Text, Tooltip } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../Context/ContextAPI";
+import url from "../constant";
 
 const ItemCard = ({
   bookName,
@@ -30,7 +31,7 @@ const ItemCard = ({
     isWishlisted ? setIsWishlisted(false) : setIsWishlisted(true);
     // Updates wishlist array on backend
     try {
-      const data = await axios.post("/wishlist", { bookId });
+      const data = await axios.post(`${url}/wishlist`, { bookId });
       console.log(data);
     } catch (e) {
       console.log(e);

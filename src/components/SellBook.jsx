@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import url from "../constant";
 
 const SellBook = () => {
   const [bookImageArr, setBookImageArr] = useState([]);
@@ -103,7 +104,10 @@ const SellBook = () => {
       imagesArr = imagesArr.length != 0 ? null : await getBookImages();
       console.log(imagesArr);
 
-      let data = await axios.post("/listBook", { imagesArr, bookDetails });
+      let data = await axios.post(`${url}/listBook`, {
+        imagesArr,
+        bookDetails,
+      });
 
       if (data.status === 200) {
         showToast(200);

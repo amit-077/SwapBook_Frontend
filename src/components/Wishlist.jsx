@@ -2,13 +2,14 @@ import { Box, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import axios from "axios";
+import url from "../constant";
 
 const Wishlist = () => {
   const [wishlistArr, setWishlistArr] = useState([]);
 
   useEffect(() => {
     const getWishlistBooks = async () => {
-      const data = await axios.post("/getWishlist", { populate: true });
+      const data = await axios.post(`${url}/getWishlist`, { populate: true });
       setWishlistArr(data.data.wishlist);
     };
 
