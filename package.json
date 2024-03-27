@@ -24,9 +24,9 @@
   },
   "proxy": "http://localhost:5000",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-scripts start --legacy-peer-deps",
+    "build": "react-scripts build --legacy-peer-deps",
+    "test": "react-scripts test --legacy-peer-deps",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
