@@ -19,7 +19,7 @@ import url from "../constant";
 
 const SellBook = () => {
   const [bookImageArr, setBookImageArr] = useState([]);
-  const [bookCloudURL, setBookCloudURL] = useState([]);
+  const [localImages, setLocalImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [showDiscountBox, setShowDiscountBox] = useState(false);
@@ -147,11 +147,11 @@ const SellBook = () => {
         >
           <Image
             cursor={"pointer"}
-            fallbackSrc="https://as1.ftcdn.net/v2/jpg/02/16/23/78/1000_F_216237809_1dx5fNiBB3wL5r80Q8rEyK8jYH83lXid.jpg"
+            fallbackSrc="/images/place19.png"
             w={"7rem"}
             h={"7rem"}
-            src={bookImageArr[0] ? showBlobImage(bookImageArr[0]) : null}
-            boxShadow={bookImageArr[0] ? "0 0 1px #a1a1a1" : null}
+            src={localImages[0]}
+            boxShadow={bookImageArr[0] && "0 0 1px #a1a1a1"}
             p={"0.5rem"}
           />
 
@@ -177,6 +177,10 @@ const SellBook = () => {
             onChange={(e) => {
               // console.log(e.target.files[0]);
               setBookImageArr([...bookImageArr, e.target.files[0]]);
+              setLocalImages([
+                ...localImages,
+                showBlobImage(e.target.files[0]),
+              ]);
             }}
           />
         </Box>
@@ -189,10 +193,10 @@ const SellBook = () => {
         >
           <Image
             cursor={"pointer"}
-            fallbackSrc="https://as1.ftcdn.net/v2/jpg/02/16/23/78/1000_F_216237809_1dx5fNiBB3wL5r80Q8rEyK8jYH83lXid.jpg"
+            fallbackSrc="/images/place19.png"
             w={"7rem"}
             h={"7rem"}
-            src={bookImageArr[1] ? showBlobImage(bookImageArr[1]) : null}
+            src={localImages[1]}
             boxShadow={bookImageArr[1] ? "0 0 1px #a1a1a1" : null}
             p={"0.5rem"}
           />
@@ -217,6 +221,10 @@ const SellBook = () => {
             onChange={(e) => {
               // console.log(e.target.files[0]);
               setBookImageArr([...bookImageArr, e.target.files[0]]);
+              setLocalImages([
+                ...localImages,
+                showBlobImage(e.target.files[0]),
+              ]);
             }}
           />
         </Box>
@@ -229,10 +237,10 @@ const SellBook = () => {
         >
           <Image
             cursor={"pointer"}
-            fallbackSrc="https://as1.ftcdn.net/v2/jpg/02/16/23/78/1000_F_216237809_1dx5fNiBB3wL5r80Q8rEyK8jYH83lXid.jpg"
+            fallbackSrc="/images/place19.png"
             w={"7rem"}
             h={"7rem"}
-            src={bookImageArr[2] ? showBlobImage(bookImageArr[2]) : null}
+            src={localImages[2]}
             boxShadow={bookImageArr[2] ? "0 0 1px #a1a1a1" : null}
             p={"0.5rem"}
           />
@@ -257,6 +265,10 @@ const SellBook = () => {
             onChange={(e) => {
               // console.log(e.target.files[0]);
               setBookImageArr([...bookImageArr, e.target.files[0]]);
+              setLocalImages([
+                ...localImages,
+                showBlobImage(e.target.files[0]),
+              ]);
             }}
           />
         </Box>
@@ -269,10 +281,10 @@ const SellBook = () => {
         >
           <Image
             cursor={"pointer"}
-            fallbackSrc="https://as1.ftcdn.net/v2/jpg/02/16/23/78/1000_F_216237809_1dx5fNiBB3wL5r80Q8rEyK8jYH83lXid.jpg"
+            fallbackSrc="/images/place19.png"
             w={"7rem"}
             h={"7rem"}
-            src={bookImageArr[3] ? showBlobImage(bookImageArr[3]) : null}
+            src={localImages[3]}
             boxShadow={bookImageArr[3] ? "0 0 1px #a1a1a1" : null}
             p={"0.5rem"}
           />
@@ -297,6 +309,10 @@ const SellBook = () => {
             onChange={(e) => {
               // console.log(e.target.files[0]);
               setBookImageArr([...bookImageArr, e.target.files[0]]);
+              setLocalImages([
+                ...localImages,
+                showBlobImage(e.target.files[0]),
+              ]);
             }}
           />
         </Box>
