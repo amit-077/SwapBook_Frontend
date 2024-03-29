@@ -88,7 +88,7 @@ const Navbar = () => {
   //
 
   const logoutUser = async () => {
-    let data = await axios.get(`${url}/logout`);
+    let data = await axios.get(`${url}/logout`, { withCredentials: true });
     if (data.status === 200) {
       localStorage.removeItem("SwapBook");
       setUser({});
