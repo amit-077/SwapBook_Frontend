@@ -139,7 +139,11 @@ const ShowModal = () => {
   const signinUser = async () => {
     setLoginLoading(true);
     try {
-      let data = await axios.post(`${url}/login`, { loginUser });
+      let data = await axios.post(
+        `${url}/login`,
+        { loginUser },
+        { withCredentials: true }
+      );
       if (data.status === 200) {
         console.log(data.data.userExists);
         data.data.userExists.password = undefined;
