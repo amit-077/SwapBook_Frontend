@@ -23,6 +23,7 @@ const SellBook = () => {
   const [loading, setLoading] = useState(false);
 
   const [showDiscountBox, setShowDiscountBox] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const [bookDetails, setBookDetails] = useState({
     bookName: "",
@@ -59,6 +60,13 @@ const SellBook = () => {
       }
     });
 
+  const config = {
+    onUploadProgress: (e) => {
+      console.log((e.loaded / e.total) * 100);
+      setProgress((e.loaded / e.total) * 100);
+    },
+  };
+
   const uploadFileToCloud = async (fileToUpload) => {
     const formData = new FormData();
     formData.append("file", fileToUpload);
@@ -67,7 +75,8 @@ const SellBook = () => {
 
     let response = await axios.post(
       "https://api.cloudinary.com/v1_1/dizoqzvu3/image/upload",
-      formData
+      formData,
+      config
     );
 
     console.log("Image uploaded");
@@ -98,16 +107,35 @@ const SellBook = () => {
   };
 
   const registerBook = async () => {
+    if (
+      bookImageArr.length < 1 ||
+      !bookDetails.bookName ||
+      !bookDetails.bookPrice ||
+      !bookDetails.bookCondition
+    ) {
+      toast({
+        title: "Please fill all the fields",
+        status: "error",
+        duration: 2000,
+      });
+      return;
+    }
     try {
       setLoading(true);
       let imagesArr = [];
       imagesArr = imagesArr.length != 0 ? null : await getBookImages();
       console.log(imagesArr);
 
-      let data = await axios.post(`${url}/listBook`, {
-        imagesArr,
-        bookDetails,
-      });
+      let data = await axios.post(
+        `${url}/listBook`,
+        {
+          imagesArr,
+          bookDetails,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (data.status === 200) {
         showToast(200);
@@ -118,6 +146,32 @@ const SellBook = () => {
       setLoading(false);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const checkImageExists = (img) => {
+    if (
+      img.type != "image/png" &&
+      img.type != "image/jpg" &&
+      img.type != "image/jpeg"
+    ) {
+      toast({
+        title: "Please upload an image",
+        status: "warning",
+        duration: 2000,
+      });
+      return true;
+    }
+    for (let i = 0; i < bookImageArr.length; i++) {
+      console.log(bookImageArr[i].name === img.name);
+      if (bookImageArr[i].name === img.name) {
+        toast({
+          title: "Cannot upload same image twice",
+          status: "error",
+          duration: 2000,
+        });
+        return true;
+      }
     }
   };
 
@@ -151,8 +205,11 @@ const SellBook = () => {
             w={"7rem"}
             h={"7rem"}
             src={localImages[0]}
-            boxShadow={bookImageArr[0] && "0 0 1px #a1a1a1"}
+            boxShadow={bookImageArr[0] ? "0 0 1px #a1a1a1" : "0 0 1px #d9d9d9"}
             p={"0.5rem"}
+            onClick={() => {
+              document.getElementById("image1").click();
+            }}
           />
 
           <FormLabel
@@ -175,7 +232,10 @@ const SellBook = () => {
             id="image1"
             display={"none"}
             onChange={(e) => {
-              // console.log(e.target.files[0]);
+              console.log(e.target.files[0]);
+              if (checkImageExists(e.target.files[0])) {
+                return;
+              }
               setBookImageArr([...bookImageArr, e.target.files[0]]);
               setLocalImages([
                 ...localImages,
@@ -197,8 +257,11 @@ const SellBook = () => {
             w={"7rem"}
             h={"7rem"}
             src={localImages[1]}
-            boxShadow={bookImageArr[1] ? "0 0 1px #a1a1a1" : null}
+            boxShadow={bookImageArr[1] ? "0 0 1px #a1a1a1" : "0 0 1px #d9d9d9"}
             p={"0.5rem"}
+            onClick={() => {
+              document.getElementById("image2").click();
+            }}
           />
           <FormLabel
             htmlFor="image2"
@@ -220,6 +283,9 @@ const SellBook = () => {
             display={"none"}
             onChange={(e) => {
               // console.log(e.target.files[0]);
+              if (checkImageExists(e.target.files[0])) {
+                return;
+              }
               setBookImageArr([...bookImageArr, e.target.files[0]]);
               setLocalImages([
                 ...localImages,
@@ -241,8 +307,11 @@ const SellBook = () => {
             w={"7rem"}
             h={"7rem"}
             src={localImages[2]}
-            boxShadow={bookImageArr[2] ? "0 0 1px #a1a1a1" : null}
+            boxShadow={bookImageArr[2] ? "0 0 1px #a1a1a1" : "0 0 1px #d9d9d9"}
             p={"0.5rem"}
+            onClick={() => {
+              document.getElementById("image3").click();
+            }}
           />
           <FormLabel
             htmlFor="image3"
@@ -264,6 +333,9 @@ const SellBook = () => {
             display={"none"}
             onChange={(e) => {
               // console.log(e.target.files[0]);
+              if (checkImageExists(e.target.files[0])) {
+                return;
+              }
               setBookImageArr([...bookImageArr, e.target.files[0]]);
               setLocalImages([
                 ...localImages,
@@ -285,8 +357,11 @@ const SellBook = () => {
             w={"7rem"}
             h={"7rem"}
             src={localImages[3]}
-            boxShadow={bookImageArr[3] ? "0 0 1px #a1a1a1" : null}
+            boxShadow={bookImageArr[3] ? "0 0 1px #a1a1a1" : "0 0 1px #d9d9d9"}
             p={"0.5rem"}
+            onClick={() => {
+              document.getElementById("image4").click();
+            }}
           />
           <FormLabel
             htmlFor="image4"
@@ -308,6 +383,9 @@ const SellBook = () => {
             display={"none"}
             onChange={(e) => {
               // console.log(e.target.files[0]);
+              if (checkImageExists(e.target.files[0])) {
+                return;
+              }
               setBookImageArr([...bookImageArr, e.target.files[0]]);
               setLocalImages([
                 ...localImages,
@@ -377,7 +455,7 @@ const SellBook = () => {
             }}
           />
           <Tooltip
-            label="Suggested price for second hand books is between 50% to 55% of actual M.R.P."
+            label="Suggested price for second hand books is between 45% to 50% of actual M.R.P."
             placement={"right"}
             hasArrow
           >
@@ -506,7 +584,7 @@ const SellBook = () => {
           padding={"0.5rem 3rem 0.5rem 3rem"}
           fontSize={"1.1rem"}
           onClick={registerBook}
-          isLoading={loading}
+          // isLoading={loading}
         >
           List for sale
         </Button>
