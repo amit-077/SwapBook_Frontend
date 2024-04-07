@@ -8,6 +8,8 @@ export const UserContext = createContext();
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [books, setBooks] = useState([]);
+  const [backupBooks, setBackupBooks] = useState([]);
 
   useEffect(() => {
     let userData = JSON.parse(localStorage.getItem("SwapBook"));
@@ -35,7 +37,19 @@ const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, isOpen, onClose, onOpen }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        isOpen,
+        onClose,
+        onOpen,
+        books,
+        setBooks,
+        setBackupBooks,
+        backupBooks,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

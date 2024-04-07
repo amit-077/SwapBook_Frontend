@@ -28,9 +28,9 @@ const SellBook = () => {
   const [bookDetails, setBookDetails] = useState({
     bookName: "",
     bookPrice: "",
-    bookDescription: "",
-    bookCondition: "",
     bookDiscountedPrice: "",
+    bookYear: "",
+    bookBranch: "",
   });
 
   useEffect(() => {
@@ -111,7 +111,8 @@ const SellBook = () => {
       bookImageArr.length < 1 ||
       !bookDetails.bookName ||
       !bookDetails.bookPrice ||
-      !bookDetails.bookCondition
+      !bookDetails.bookBranch ||
+      !bookDetails.bookYear
     ) {
       toast({
         title: "Please fill all the fields",
@@ -398,19 +399,20 @@ const SellBook = () => {
       {/* Book name */}
       <Box
         mt={"3rem"}
-        display={"flex"}
+        // display={"flex"}
         alignItems={"center"}
         gap={"2rem"}
         justifyContent={"left"}
       >
         <Box>
-          <Text fontSize={"1.2rem"} fontWeight={"500"}>
+          <Text fontSize={"1rem"} fontWeight={"500"}>
             Book name :{" "}
           </Text>
         </Box>
-        <Box>
+        <Box mt={"0.5rem"}>
           <Input
-            border={"1px solid #333"}
+            border={"1px solid #aaa"}
+            bgColor={"rgba(255,255,255,0.5)"}
             w={"30rem"}
             _hover={{ border: "1px solid #aaa" }}
             type="text"
@@ -427,20 +429,19 @@ const SellBook = () => {
       {/* Book Price */}
       <Box
         mt={"3rem"}
-        display={"flex"}
         alignItems={"center"}
         gap={"2rem"}
         justifyContent={"left"}
-        ml={"-2.8rem"}
       >
         <Box>
-          <Text fontSize={"1.2rem"} fontWeight={"500"}>
+          <Text fontSize={"1rem"} fontWeight={"500"}>
             Book price (INR) :{" "}
           </Text>
         </Box>
-        <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
+        <Box display={"flex"} alignItems={"center"} gap={"1rem"} mt={"0.5rem"}>
           <Input
-            border={"1px solid #333"}
+            border={"1px solid #aaa"}
+            bgColor={"rgba(255,255,255,0.5)"}
             w={"30rem"}
             _hover={{ border: "1px solid #aaa" }}
             type="number"
@@ -465,40 +466,46 @@ const SellBook = () => {
           </Tooltip>
         </Box>
       </Box>
-      <Box
-        display={"flex"}
-        alignItems={"center"}
-        gap={"0.6rem"}
-        mt={"1.5rem"}
-        ml={"10rem"}
-      >
+      <Box display={"flex"} alignItems={"center"} gap={"0.6rem"} mt={"1.5rem"}>
         <Checkbox
           size={"lg"}
           value={showDiscountBox}
+          isChecked={showDiscountBox}
           onChange={(e) => {
             setShowDiscountBox(e.target.checked);
           }}
         />
-        <Text>Set discounted price</Text>
+        <Text
+          cursor={"pointer"}
+          onClick={() => {
+            setShowDiscountBox(!showDiscountBox);
+          }}
+        >
+          Set discounted price
+        </Text>
       </Box>
       {/* Book Discounted Price */}
       {showDiscountBox && (
         <Box
           mt={"3rem"}
-          display={"flex"}
           alignItems={"center"}
           gap={"2rem"}
           justifyContent={"left"}
-          ml={"-6.7rem"}
         >
           <Box>
-            <Text fontSize={"1.2rem"} fontWeight={"500"}>
+            <Text fontSize={"1rem"} fontWeight={"500"}>
               Discounted price (INR) :{" "}
             </Text>
           </Box>
-          <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            gap={"1rem"}
+            mt={"0.5rem"}
+          >
             <Input
-              border={"1px solid #333"}
+              border={"1px solid #aaa"}
+              bgColor={"rgba(255,255,255,0.5)"}
               w={"30rem"}
               _hover={{ border: "1px solid #aaa" }}
               type="number"
@@ -516,20 +523,13 @@ const SellBook = () => {
         </Box>
       )}
       {/* Book description */}
-      <Box
-        mt={"3rem"}
-        display={"flex"}
-        alignItems={"top"}
-        gap={"2rem"}
-        justifyContent={"left"}
-        ml={"-3rem"}
-      >
+      {/* <Box mt={"3rem"} alignItems={"top"} gap={"2rem"} justifyContent={"left"}>
         <Box>
-          <Text fontSize={"1.2rem"} fontWeight={"500"}>
-            Book description :{" "}
+          <Text fontSize={"1.1rem"} fontWeight={"500"}>
+            Book description (optional):{" "}
           </Text>
         </Box>
-        <Box>
+        <Box mt={"0.5rem"}>
           <Textarea
             w={"30rem"}
             border={"1px solid #333"}
@@ -545,46 +545,80 @@ const SellBook = () => {
             }}
           />
         </Box>
-      </Box>
-      {/* Book condition */}
+      </Box> */}
+      {/* Book Year */}
       <Box
         mt={"3rem"}
-        display={"flex"}
         alignItems={"center"}
         gap={"2rem"}
         justifyContent={"left"}
-        ml={"-3rem"}
       >
         <Box>
-          <Text fontSize={"1.2rem"} fontWeight={"500"}>
-            Book condition :{" "}
+          <Text fontSize={"1rem"} fontWeight={"500"}>
+            Which Year :{" "}
           </Text>
         </Box>
-        <Box>
+        <Box mt={"0.5rem"}>
           <Select
-            placeholder="Select condition"
-            name="bookCondition"
-            value={bookDetails.bookCondition}
+            placeholder="Select Year"
+            w={"20%"}
+            name="bookYear"
+            value={bookDetails.bookYear}
             onChange={(e) => {
               setBookDetails((prevVal) => {
                 return { ...bookDetails, [e.target.name]: e.target.value };
               });
             }}
           >
-            <option value={"new"}>New</option>
-            <option value={"excellent"}>Excellent</option>
-            <option value={"good"}>Good</option>
-            <option value={"fair"}>Fair</option>
+            <option value={"First"}>F.E.</option>
+            <option value={"Second"}>S.E.</option>
+            <option value={"Third"}>T.E.</option>
+            <option value={"Forth"}>B.E.</option>
           </Select>
         </Box>
       </Box>
-      <Box mt={"3rem"} pb={"3rem"} ml={"-3rem"}>
+      {/* Book Branch */}
+      <Box
+        mt={"3rem"}
+        alignItems={"center"}
+        gap={"2rem"}
+        justifyContent={"left"}
+      >
+        <Box>
+          <Text fontSize={"1rem"} fontWeight={"500"}>
+            Which Branch :{" "}
+          </Text>
+        </Box>
+        <Box mt={"0.5rem"}>
+          <Select
+            placeholder="Select Branch"
+            w={"20%"}
+            name="bookBranch"
+            value={bookDetails.bookBranch}
+            onChange={(e) => {
+              setBookDetails((prevVal) => {
+                return { ...bookDetails, [e.target.name]: e.target.value };
+              });
+            }}
+          >
+            <option value={"Computer"}>Computer</option>
+            <option value={"IT"}>IT</option>
+            <option value={"Mechanical"}>Mechanical</option>
+            <option value={"Civil"}>Civil</option>
+            <option value={"Electrical"}>Electrical</option>
+            <option value={"EnTC"}>EnTC</option>
+            <option value={"Printing"}>Printing</option>
+            <option value={"Other"}>Other</option>
+          </Select>
+        </Box>
+      </Box>
+      <Box mt={"3rem"} pb={"3rem"}>
         <Button
           colorScheme="blue"
           padding={"0.5rem 3rem 0.5rem 3rem"}
           fontSize={"1.1rem"}
           onClick={registerBook}
-          // isLoading={loading}
+          isLoading={loading}
         >
           List for sale
         </Button>

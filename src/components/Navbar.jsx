@@ -32,7 +32,16 @@ import ShowModal from "./Modal";
 import url from "../constant";
 
 const Navbar = () => {
-  const { user, setUser, isOpen, onClose, onOpen } = useContext(UserContext);
+  const {
+    user,
+    setUser,
+    isOpen,
+    onClose,
+    onOpen,
+    books,
+    setBooks,
+    backupBooks,
+  } = useContext(UserContext);
   const [link, setLink] = useState(0);
 
   //
@@ -45,6 +54,7 @@ const Navbar = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentText, setCurrentText] = useState(placeholderTexts[0]);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
 
   const data = useLocation();
 
@@ -95,6 +105,23 @@ const Navbar = () => {
       window.location.reload();
     }
     console.log(data);
+  };
+
+  const searchBooks = (bookInput) => {
+    if (!bookInput) {
+      setBooks(backupBooks);
+      return;
+    }
+    try {
+      console.log(bookInput);
+      let data = backupBooks.filter((e) => {
+        return e.name.toLowerCase().includes(bookInput.toLowerCase());
+      });
+      console.log(data);
+      setBooks(data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -148,6 +175,12 @@ const Navbar = () => {
                 // placeholder={"Search by book name"}
                 placeholder={currentText.substring(0, currentCharIndex)}
                 _focusVisible={{ outlineColor: "none" }}
+                value={searchInput}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setSearchInput(e.target.value);
+                  searchBooks(e.target.value);
+                }}
               />
             </InputGroup>
           </Box>

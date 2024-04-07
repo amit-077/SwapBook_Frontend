@@ -3,14 +3,29 @@ import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import axios from "axios";
 import url from "../constant";
+import Loader from "./utils/Loader";
 
 const Wishlist = () => {
   const [wishlistArr, setWishlistArr] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getWishlistBooks = async () => {
-      const data = await axios.post(`${url}/getWishlist`, { populate: true });
-      setWishlistArr(data.data.wishlist);
+      try {
+        setLoading(true);
+        const data = await axios.post(
+          `${url}/getWishlist`,
+          { populate: true },
+          { withCredentials: true }
+        );
+
+        console.log(data.data);
+        setWishlistArr(data.data.wishlist);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getWishlistBooks();
@@ -53,20 +68,31 @@ const Wishlist = () => {
         gap={"2rem"}
         flexWrap={"wrap"}
       >
-        {wishlistArr.map((book) => {
-          return (
-            <ItemCard
-              bookName={book.name}
-              bookPrice={book.price}
-              bookDPrice={book.discountedPrice}
-              bookImg={book.image}
-              bookId={book._id}
-              wishlistArr={wishlistArr}
-              key={book._id}
-              liked={true} // bcoz wishlisted things are always liked.
-            />
-          );
-        })}
+        {loading && (
+          <Box
+            w={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            mt={"5rem"}
+          >
+            <Loader />
+          </Box>
+        )}
+        {!loading &&
+          wishlistArr.map((book) => {
+            return (
+              <ItemCard
+                bookName={book.name}
+                bookPrice={book.price}
+                bookDPrice={book.discountedPrice}
+                bookImg={book.image}
+                bookId={book._id}
+                wishlistArr={wishlistArr}
+                key={book._id}
+                liked={true} // bcoz wishlisted things are always liked.
+              />
+            );
+          })}
       </Box>
       {/* Padding bottom was not working, so I used an empty box with height 2rem at the bottom. */}
       <Box height={"2rem"}></Box>

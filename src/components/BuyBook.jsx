@@ -26,7 +26,7 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   RangeSlider,
@@ -38,6 +38,7 @@ import ItemCard from "./ItemCard";
 import axios from "axios";
 import Loader from "./utils/Loader";
 import url from "../constant";
+import { UserContext } from "../Context/ContextAPI";
 
 const BuyBook = () => {
   const [sliderValue1, setSliderValue1] = useState(50);
@@ -46,10 +47,33 @@ const BuyBook = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showTooltip1, setShowTooltip1] = useState(false);
   const [booksArr, setBooksArr] = useState([]);
+  const [firstVisit, setFirstVisit] = useState(false);
   const [sort, setSort] = useState("");
   const [wishlistArr, setWishlistArr] = useState("");
-  const [bookCond, setBookCond] = useState([]); // set book condition for filtering books with condition
+  const [bookYear, setBookYear] = useState([]); // set book condition for filtering books with condition
   const [loading, setLoading] = useState(false);
+  const [bookBranch, setBookBranch] = useState("");
+
+  const { books, setBooks, setBackupBooks, backupBooks } =
+    useContext(UserContext);
+
+  const getAllBooks = async () => {
+    setLoading(true);
+    try {
+      let data = await axios.get(`${url}/getAllBooks`);
+      setBooks(data.data);
+      setBackupBooks(data.data);
+    } catch (e) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (books.length === 0) {
+      getAllBooks();
+    }
+  }, []);
 
   // Get all books for display
   // useEffect(() => {
@@ -68,14 +92,18 @@ const BuyBook = () => {
   // }, []);
 
   // Get the current user to add wishlist books to his collection. Get updated user, not local storage wala user.
-  // useEffect(() => {
-  //   const getWishlistBooks = async () => {
-  //     const data = await axios.post(`${url}/getWishlist`, { populate: false });
-  //     setWishlistArr(data.data.wishlist);
-  //   };
+  useEffect(() => {
+    const getWishlistBooks = async () => {
+      const data = await axios.post(
+        `${url}/getWishlist`,
+        { populate: false },
+        { withCredentials: true }
+      );
+      setWishlistArr(data.data.wishlist);
+    };
 
-  //   getWishlistBooks();
-  // }, []);
+    getWishlistBooks();
+  }, []);
 
   // UseEffect for handling debouncing / throttling
 
@@ -83,8 +111,10 @@ const BuyBook = () => {
     let changeValue; // variable for clearing and setting timeout
 
     changeValue = setTimeout(() => {
-      setPriceRange();
+      firstVisit && setPriceRange();
     }, 500);
+
+    setFirstVisit(true);
 
     return () => {
       clearTimeout(changeValue);
@@ -110,8 +140,15 @@ const BuyBook = () => {
     });
 
   const sortBooks = async (sort) => {
-    const data = await axios.post(`${url}/sortBooks`, { sortQuery: sort });
-    setBooksArr(data.data);
+    try {
+      setLoading(true);
+      const data = await axios.post(`${url}/sortBooks`, { sortQuery: sort });
+      setBooks(data.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const setPriceRange = async () => {
@@ -120,23 +157,69 @@ const BuyBook = () => {
       low: sliderValue1,
       high: sliderValue2,
     });
-    setBooksArr(data.data);
+    setBooks(data.data);
     setLoading(false);
   };
 
+  // useEffect(() => {
+  //   const bookCondition = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const { data } = await axios.post(`${url}/bookCondition`, { bookCond });
+  //       setBooks(data);
+  //       setLoading(false);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  //   bookCond.length > 0 && bookCondition();
+  // }, [bookCond]);
+
+  const selectYear = async (year) => {
+    //  Instead of doing sorting of year books locally, I have sent query to backend.
+    try {
+      setLoading(true);
+      let { data } = await axios.post(`${url}/sortByYear`, { bookYear: year });
+      setBooks(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectBranch = async (branch) => {
+    console.log(branch);
+    try {
+      setLoading(true);
+      let { data } = await axios.post(`${url}/sortByBranch`, {
+        bookBranch: branch,
+      });
+      setBooks(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Sort By Year
   useEffect(() => {
-    const bookCondition = async () => {
-      try {
-        setLoading(true);
-        const { data } = await axios.post(`${url}/bookCondition`, { bookCond });
-        setBooksArr(data);
-        setLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    bookCond.length > 0 && bookCondition();
-  }, [bookCond]);
+    if (bookYear.length === 0) {
+      setBooks(backupBooks);
+      return;
+    }
+    selectYear(bookYear);
+  }, [bookYear]);
+
+  // Sort By Branch
+  useEffect(() => {
+    if (!bookBranch) {
+      setBooks(backupBooks);
+      return;
+    }
+    selectBranch(bookBranch);
+  }, [bookBranch]);
 
   return (
     <Box
@@ -254,18 +337,18 @@ const BuyBook = () => {
               </Box>
             </Box>
             {/* Divider */}
-            <Menu>
+            {/* <Menu>
               <MenuDivider />
-            </Menu>
+            </Menu> */}
             {/* Filter by location */}
 
             {/* Location title */}
-            <Box pl={"1.5rem"} pr={"1.5rem"}>
+            {/* <Box pl={"1.5rem"} pr={"1.5rem"}>
               <Text fontSize={"1.2rem"}>Filter by location</Text>
-            </Box>
+            </Box> */}
 
             {/* Location slider */}
-            <Box mt={"1rem"} pl={"1.5rem"} pr={"1.5rem"} pb={"1rem"}>
+            {/* <Box mt={"1rem"} pl={"1.5rem"} pr={"1.5rem"} pb={"1rem"}>
               <Slider
                 defaultValue={11}
                 size={"lg"}
@@ -292,7 +375,7 @@ const BuyBook = () => {
                   <SliderThumb boxSize={5} border={"1px solid #d9d9d9"} />
                 </Tooltip>
               </Slider>
-            </Box>
+            </Box> */}
             {/* Divider */}
             <Menu>
               <MenuDivider />
@@ -314,7 +397,7 @@ const BuyBook = () => {
                 >
                   <Box mt={"2rem"}>
                     <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
-                      <Text fontSize={"1.2rem"}>Book Condition</Text>
+                      <Text fontSize={"1.2rem"}>Book Year</Text>
                       <AccordionIcon />
                     </Box>
                   </Box>
@@ -325,101 +408,285 @@ const BuyBook = () => {
                     {/* first item */}
                     <Box>
                       <Checkbox
-                        value={"new"}
+                        value={"First"}
                         size={"lg"}
-                        isChecked={bookCond.includes("new") ? true : false}
+                        isChecked={bookYear.includes("First") ? true : false}
                         onChange={() => {
-                          if (bookCond.includes("new")) {
-                            setBookCond((prevVal) => {
+                          if (bookYear.includes("First")) {
+                            setBookYear((prevVal) => {
                               return prevVal.filter((cond) => {
-                                return cond != "new";
+                                return cond != "First";
                               });
                             });
                           } else {
-                            setBookCond((prevVal) => {
-                              return [...prevVal, "new"];
+                            setBookYear((prevVal) => {
+                              return [...prevVal, "First"];
                             });
                           }
                         }}
                       >
-                        <Text fontSize={"1rem"}>New</Text>
+                        <Text fontSize={"1rem"}>First Year</Text>
                       </Checkbox>
                     </Box>
                     {/* first item */}
                     <Box>
                       <Checkbox
-                        value={"excellent"}
+                        value={"Second"}
                         size={"lg"}
-                        isChecked={
-                          bookCond.includes("excellent") ? true : false
-                        }
+                        isChecked={bookYear.includes("Second") ? true : false}
                         onChange={() => {
-                          if (bookCond.includes("excellent")) {
-                            setBookCond((prevVal) => {
+                          if (bookYear.includes("Second")) {
+                            setBookYear((prevVal) => {
                               return prevVal.filter((cond) => {
-                                return cond != "excellent";
+                                return cond != "Second";
                               });
                             });
                           } else {
-                            setBookCond((prevVal) => {
-                              return [...prevVal, "excellent"];
+                            setBookYear((prevVal) => {
+                              return [...prevVal, "Second"];
                             });
                           }
                         }}
                       >
-                        <Text fontSize={"1rem"}>Excellent</Text>
+                        <Text fontSize={"1rem"}>Second Year</Text>
                       </Checkbox>
                     </Box>
                     {/* first item */}
                     <Box>
                       <Checkbox
-                        value={"good"}
+                        value={"Third"}
                         size={"lg"}
-                        isChecked={bookCond.includes("good") ? true : false}
+                        isChecked={bookYear.includes("Third") ? true : false}
                         onChange={() => {
-                          if (bookCond.includes("good")) {
-                            setBookCond((prevVal) => {
+                          if (bookYear.includes("Third")) {
+                            setBookYear((prevVal) => {
                               return prevVal.filter((cond) => {
-                                return cond != "good";
+                                return cond != "Third";
                               });
                             });
                           } else {
-                            setBookCond((prevVal) => {
-                              return [...prevVal, "good"];
+                            setBookYear((prevVal) => {
+                              return [...prevVal, "Third"];
                             });
                           }
                         }}
                       >
-                        <Text fontSize={"1rem"}>Good</Text>
+                        <Text fontSize={"1rem"}>Third Year</Text>
                       </Checkbox>
                     </Box>
                     {/* first item */}
                     <Box>
                       <Checkbox
-                        value={"fair"}
+                        value={"Forth"}
                         size={"lg"}
-                        isChecked={bookCond.includes("fair") ? true : false}
+                        isChecked={bookYear.includes("Forth") ? true : false}
                         onChange={() => {
-                          if (bookCond.includes("fair")) {
-                            setBookCond((prevVal) => {
+                          if (bookYear.includes("Forth")) {
+                            setBookYear((prevVal) => {
                               return prevVal.filter((cond) => {
-                                return cond != "fair";
+                                return cond != "Forth";
                               });
                             });
                           } else {
-                            setBookCond((prevVal) => {
-                              return [...prevVal, "fair"];
+                            setBookYear((prevVal) => {
+                              return [...prevVal, "Forth"];
                             });
                           }
                         }}
                       >
-                        <Text fontSize={"1rem"}>Fair</Text>
+                        <Text fontSize={"1rem"}>Forth Year</Text>
                       </Checkbox>
                     </Box>
                   </Box>
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>
+
+            {/* Book Branch */}
+            <Menu>
+              <MenuDivider />
+            </Menu>
+            {/* Book Condition */}
+            <Accordion
+              allowToggle
+              defaultIndex={[0]}
+              pl={"1.5rem"}
+              pr={"1.5rem"}
+              mt={"0.5rem"}
+            >
+              <AccordionItem border={"none"}>
+                <AccordionButton
+                  padding={"0"}
+                  height={"1rem"}
+                  mb={"1.5rem"}
+                  _hover={{ bgColor: "" }}
+                >
+                  <Box mt={"2rem"}>
+                    <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
+                      <Text fontSize={"1.2rem"}>Book Branch</Text>
+                      <AccordionIcon />
+                    </Box>
+                  </Box>
+                </AccordionButton>
+                <AccordionPanel p={"0"} pt={"1rem"} pl={"0.5rem"}>
+                  {/* items */}
+                  <Box display={"flex"} flexDir={"column"} gap={"0.4rem"}>
+                    {/* first item */}
+                    <Box>
+                      <Checkbox
+                        value={"Computer"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Computer"}
+                        onChange={() => {
+                          if (bookBranch === "Computer") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Computer");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Computer</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* second item */}
+                    <Box>
+                      <Checkbox
+                        value={"IT"}
+                        size={"lg"}
+                        isChecked={bookBranch === "IT"}
+                        onChange={() => {
+                          if (bookBranch === "IT") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("IT");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>IT</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* third item */}
+                    <Box>
+                      <Checkbox
+                        value={"Mechanical"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Mechanical"}
+                        onChange={() => {
+                          if (bookBranch === "Mechanical") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Mechanical");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Mechanical</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* forth item */}
+                    <Box>
+                      <Checkbox
+                        value={"Civil"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Civil"}
+                        onChange={() => {
+                          if (bookBranch === "Civil") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Civil");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Civil</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* fifth item */}
+                    <Box>
+                      <Checkbox
+                        value={"Electrical"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Electrical"}
+                        onChange={() => {
+                          if (bookBranch === "Electrical") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Electrical");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Electrical</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* sixth item */}
+                    <Box>
+                      <Checkbox
+                        value={"EnTC"}
+                        size={"lg"}
+                        isChecked={bookBranch === "EnTC"}
+                        onChange={() => {
+                          if (bookBranch === "EnTC") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("EnTC");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>EnTC</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* seventh item */}
+                    <Box>
+                      <Checkbox
+                        value={"Printing"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Printing"}
+                        onChange={() => {
+                          if (bookBranch === "Printing") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Printing");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Printing</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* Eight item */}
+                    <Box>
+                      <Checkbox
+                        value={"Other"}
+                        size={"lg"}
+                        isChecked={bookBranch === "Other"}
+                        onChange={() => {
+                          if (bookBranch === "Other") {
+                            setBookBranch("");
+                          } else {
+                            setBookBranch("Other");
+                          }
+                        }}
+                      >
+                        <Text fontSize={"1rem"}>Other</Text>
+                      </Checkbox>
+                    </Box>
+                    {/* ninth item */}
+                  </Box>
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+            {/* Book Branch */}
+            <Menu>
+              <MenuDivider />
+            </Menu>
+            {/* Clear all filters */}
+            <Box mt={"1.5rem"} w={"100%"} pl={"2rem"} pr={"2rem"}>
+              <Button
+                bgColor={"#FB635D"}
+                color={"#f5f5f5"}
+                w={"100%"}
+                _hover={{ bgColor: "#F05941" }}
+              >
+                Clear all filters
+              </Button>
+            </Box>
           </Box>
         </VStack>
         <VStack w={"75%"} h={"100%"} ml={"28%"}>
@@ -510,7 +777,7 @@ const BuyBook = () => {
                 </Box>
               )}
               {!loading &&
-                booksArr.map((book) => {
+                books.map((book) => {
                   return (
                     <ItemCard
                       bookName={book.name}

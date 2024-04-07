@@ -7,6 +7,7 @@ import SellBook from "./SellBook";
 import BuyBook from "./BuyBook";
 import Wishlist from "./Wishlist";
 import MyBooks from "./MyBooks";
+import Book from "./Book";
 
 const App = () => {
   return (
@@ -54,6 +55,15 @@ const App = () => {
             <>
               <Navbar />
               <MyBooks />
+            </>
+          }
+        />
+        <Route
+          path="/book/:bookId"
+          element={
+            <>
+              <Navbar />
+              <Book />
             </>
           }
         />

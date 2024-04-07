@@ -1,11 +1,14 @@
 import { Box, Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import BookCard from "./BookCard";
 import BuyBookInst from "./BuyBookInst";
 import { Parallax } from "react-parallax";
 import { Link, NavLink } from "react-router-dom";
+import axios from "axios";
+import url from "../constant";
+import { UserContext } from "../Context/ContextAPI";
 
 const responsive = {
   superLargeDesktop: {
@@ -28,6 +31,22 @@ const responsive = {
 };
 
 const Home = () => {
+  const { books, setBooks, setBackupBooks } = useContext(UserContext);
+
+  const getAllBooks = async () => {
+    try {
+      let { data } = await axios.get(`${url}/getAllBooks`);
+      setBooks(data);
+      setBackupBooks(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getAllBooks();
+  }, []);
+
   return (
     <Box
       w={"100vw"}
@@ -45,7 +64,7 @@ const Home = () => {
                 <Box>
                   <Text
                     fontSize={"3.5rem"}
-                    fontWeight={"600"}
+                    fontWeight={"400"}
                     display={"inline-block"}
                   >
                     Buy and sell your college books for the best{" "}
@@ -153,16 +172,11 @@ const Home = () => {
               transitionDuration={1000}
               arrows={false}
             >
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
-              <BookCard />
+              {books.slice(0, 10).map((e) => {
+                return (
+                  <BookCard name={e.name} price={e.price} img={e.image[0]} />
+                );
+              })}
             </Carousel>
           </Box>
           {/* Below Section */}
