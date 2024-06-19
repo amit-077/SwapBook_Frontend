@@ -41,6 +41,8 @@ const Navbar = () => {
     books,
     setBooks,
     backupBooks,
+    cart,
+    setCart,
   } = useContext(UserContext);
   const [link, setLink] = useState(0);
 
@@ -74,6 +76,8 @@ const Navbar = () => {
       setLink(4);
     } else if (str == "my-books") {
       setLink(5);
+    } else if (str == "cart") {
+      setLink(6);
     }
   }, []);
 
@@ -141,8 +145,8 @@ const Navbar = () => {
         zIndex={10}
       >
         <Link _hover={{ textDecoration: "none" }} href="/">
-          <Box display={"flex"} alignItems={"center"}>
-            <Box transform={"scale(0.45)"}>
+          <Box display={{ lg: "flex", base: "none" }} alignItems={"center"}>
+            <Box transform={"scale(0.35)"}>
               <Image src="/images/Logo.png" />
             </Box>
             <Box
@@ -153,18 +157,28 @@ const Navbar = () => {
               justifyContent={"right"}
               mb={"0.3rem"}
             >
-              <Text fontSize={"2.3rem"} fontFamily={"Righteous"}>
+              <Text
+                fontSize={{ base: "1.5rem", md: "1.9rem", lg: "2.3rem" }}
+                fontFamily={"Righteous"}
+              >
                 SwapBook
               </Text>
-              <Text fontSize={"0.75rem"} mt={"-0.5rem"}>
+              <Text
+                fontSize={{ base: "0.5rem", md: "1.9rem", lg: "0.75rem" }}
+                mt={"-0.5rem"}
+              >
                 Share knowledge, Save wallets
               </Text>
             </Box>
           </Box>
         </Link>
-        <Box display={"flex"} alignItems={"center"} gap={"1.2rem"}>
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          gap={{ base: "0.7rem", md: "1.9rem", lg: "1.2rem" }}
+        >
           {/* Auto typing effect */}
-          <Box mr={"1rem"} display={link == 3 ? "block" : "none"}>
+          <Box mr={"1rem"} display={link === 3 ? "block" : "none"}>
             <InputGroup>
               <InputLeftElement>
                 <Search2Icon />
@@ -188,22 +202,23 @@ const Navbar = () => {
           <Box>
             <NavLink to={"/"}>
               <Text
-                fontSize={"1.1rem"}
+                fontSize={{ base: "0.8rem", md: "1.9rem", lg: "1rem" }}
                 fontWeight={"700"}
                 _hover={{ color: "#FB635D" }}
                 color={link == 1 ? "#FB635D" : "#333"}
                 onClick={() => {
                   setLink(1);
                 }}
+                ml={{ base: "0.8rem", md: "0", lg: "0" }}
               >
                 Home
               </Text>
             </NavLink>
           </Box>
-          <Box ml={"2rem"}>
+          <Box ml={"1.5rem"}>
             <NavLink to={"/sell-book"}>
               <Text
-                fontSize={"1.1rem"}
+                fontSize={{ base: "0.8rem", md: "1.9rem", lg: "1rem" }}
                 fontWeight={"700"}
                 _hover={{ color: "#FB635D" }}
                 color={link == 2 ? "#FB635D" : "#333"}
@@ -215,10 +230,10 @@ const Navbar = () => {
               </Text>
             </NavLink>
           </Box>
-          <Box ml={"2rem"}>
+          <Box ml={"1.5rem"}>
             <NavLink to={"/buy-book"}>
               <Text
-                fontSize={"1.1rem"}
+                fontSize={{ base: "0.8rem", md: "1.9rem", lg: "1rem" }}
                 fontWeight={"700"}
                 _hover={{ color: "#FB635D" }}
                 color={link == 3 ? "#FB635D" : "#333"}
@@ -230,13 +245,45 @@ const Navbar = () => {
               </Text>
             </NavLink>
           </Box>
+          {/* Cart */}
+          <Box
+            ml={"2rem"}
+            onClick={() => {
+              setLink(6);
+            }}
+          >
+            <NavLink to={"/cart"}>
+              <Text
+                fontSize={{ base: "0.9rem", md: "1.9rem", lg: "1.1rem" }}
+                position={"relative"}
+                fontWeight={"700"}
+                _hover={{ color: "#FB635D" }}
+                color={link == 6 ? "#FB635D" : "#333"}
+              >
+                <Text
+                  position={"absolute"}
+                  fontSize={"0.6rem"}
+                  top={"-0.3rem"}
+                  right={"-0.3rem"}
+                  bgColor={"#fb635d"}
+                  color={"#f5f5f5"}
+                  pl={"0.3rem"}
+                  pr={"0.3rem"}
+                  borderRadius={"100%"}
+                >
+                  {cart?.length === 0 ? null : cart?.length}
+                </Text>
+                <i class="fa-solid fa-cart-shopping"></i>
+              </Text>
+            </NavLink>
+          </Box>
         </Box>
         {/* My account */}
         <Box mr={"3rem"}>
           <Menu>
             <MenuButton>
               <Box
-                ml={"5rem"}
+                ml={{ base: "3rem", md: "0", lg: "5rem" }}
                 display={"flex"}
                 justifyContent={"center"}
                 flexDir={"column"}
@@ -250,7 +297,11 @@ const Navbar = () => {
                     style={{ fontWeight: "600" }}
                   ></i>
                 </Text>
-                <Text fontSize={"0.85rem"} fontWeight={"600"} role="group">
+                <Text
+                  fontSize={{ base: "0.5rem", md: "1.9rem", lg: "0.85rem" }}
+                  fontWeight={"600"}
+                  role="group"
+                >
                   My Account
                 </Text>
               </Box>
@@ -262,7 +313,7 @@ const Navbar = () => {
                   <Box
                     display={"flex"}
                     gap={"1rem"}
-                    fontSize={"1.1rem"}
+                    fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                     alignItems={"center"}
                   >
                     <Text fontSize={"1.2rem"}>
@@ -278,15 +329,31 @@ const Navbar = () => {
                 <Box
                   display={"flex"}
                   gap={"1rem"}
-                  fontSize={"1.1rem"}
+                  fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                   alignItems={"center"}
                 >
-                  <Text fontSize={"1.2rem"}>
+                  <Text fontSize={"1.1rem"}>
                     <i className="fa-regular fa-user"></i>
                   </Text>
                   <Text>My Profile</Text>
                 </Box>
               </MenuItem>
+              <MenuDivider />
+              <NavLink to={"/my-orders"}>
+                <MenuItem>
+                  <Box
+                    display={"flex"}
+                    gap={"1rem"}
+                    fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
+                    alignItems={"center"}
+                  >
+                    <Text fontSize={"1.1rem"}>
+                      <i class="fa-solid fa-cart-plus"></i>
+                    </Text>
+                    <Text>My Orders</Text>
+                  </Box>
+                </MenuItem>
+              </NavLink>
               <MenuDivider />
               {/* My Books */}
               <NavLink to={"/my-books"}>
@@ -298,17 +365,17 @@ const Navbar = () => {
                   <Box
                     display={"flex"}
                     gap={"1rem"}
-                    fontSize={"1.1rem"}
+                    fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                     alignItems={"center"}
                   >
                     <Text
-                      fontSize={"1.2rem"}
+                      fontSize={"1.1rem"}
                       color={link == 5 ? "#FB635D" : "#333"}
                     >
                       {link == 5 ? (
-                        <i className="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-book"></i>
                       ) : (
-                        <i className="fa-regular fa-heart"></i>
+                        <i class="fa-solid fa-book"></i>
                       )}
                     </Text>
                     <Text color={link == 5 ? "#FB635D" : "#333"}>My Books</Text>
@@ -326,11 +393,11 @@ const Navbar = () => {
                   <Box
                     display={"flex"}
                     gap={"1rem"}
-                    fontSize={"1.1rem"}
+                    fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                     alignItems={"center"}
                   >
                     <Text
-                      fontSize={"1.2rem"}
+                      fontSize={"1.1rem"}
                       color={link == 4 ? "#FB635D" : "#333"}
                     >
                       {link == 4 ? (
@@ -349,10 +416,10 @@ const Navbar = () => {
                 <Box
                   display={"flex"}
                   gap={"1rem"}
-                  fontSize={"1.1rem"}
+                  fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                   alignItems={"center"}
                 >
-                  <Text fontSize={"1.2rem"}>
+                  <Text fontSize={"1.1rem"}>
                     <i className="fa-regular fa-circle-question"></i>
                   </Text>
                   <Text>About us</Text>
@@ -364,10 +431,10 @@ const Navbar = () => {
                   <Box
                     display={"flex"}
                     gap={"1rem"}
-                    fontSize={"1.1rem"}
+                    fontSize={"1rem"}
                     alignItems={"center"}
                   >
-                    <Text fontSize={"1.2rem"}>
+                    <Text fontSize={"1.1rem"}>
                       <i
                         className="fa-solid fa-arrow-right-from-bracket"
                         style={{ fontWeight: "600" }}

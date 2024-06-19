@@ -14,6 +14,7 @@ const ItemCard = ({
   wishlistArr,
   liked,
   hideLike,
+  bookYear,
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -40,7 +41,7 @@ const ItemCard = ({
   };
 
   return (
-    <NavLink to={`/book/${bookId}`}>
+    <NavLink>
       <Box>
         <Box
           w={"15rem"}
@@ -115,89 +116,91 @@ const ItemCard = ({
             )}
           </Box>
           {/* Details */}
-          <Box p={"0.7rem 1rem 0.5rem 1rem"}>
-            <Box>
-              <Tooltip
-                label={bookName}
-                placement="top-start"
-                fontSize={"0.7rem"}
-                bgColor={"#444"}
-                openDelay={100}
-              >
-                {/* Here below, I have added "Hello World", but there should be a permenant solution for that. Do something for that. */}
-                <Text>
-                  {bookName.length > 30 ? (
-                    bookName.substring(0, 30) + "..."
-                  ) : (
-                    <>
-                      {bookName}{" "}
-                      <span style={{ visibility: "hidden" }}>
-                        Hello world 123456789
-                      </span>
-                    </>
-                  )}
-                </Text>
-              </Tooltip>
-            </Box>
-            <Box
-              pt={"0.5rem"}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-            >
-              <Box display={"flex"} alignItems={"center"} gap={"0.6rem"}>
-                <Text fontSize={"1.2rem"} fontWeight={"500"}>
-                  {"₹" + (bookDPrice == 0 ? bookPrice : bookDPrice)}
-                </Text>
-                {bookDPrice != bookPrice && (
-                  <Text fontSize={"0.8rem"} color={"grey"} fontWeight={"400"}>
-                    <strike>{"₹" + bookPrice}</strike>
+          <NavLink to={`/book/${bookId}`}>
+            <Box p={"0.7rem 1rem 0.5rem 1rem"}>
+              <Box>
+                <Tooltip
+                  label={bookName}
+                  placement="top-start"
+                  fontSize={"0.7rem"}
+                  bgColor={"#444"}
+                  openDelay={100}
+                >
+                  {/* Here below, I have added "Hello World", but there should be a permenant solution for that. Do something for that. */}
+                  <Text>
+                    {bookName.length > 30 ? (
+                      bookName.substring(0, 30) + "..."
+                    ) : (
+                      <>
+                        {bookName}{" "}
+                        <span style={{ visibility: "hidden" }}>
+                          Hello world 123456789
+                        </span>
+                      </>
+                    )}
                   </Text>
+                </Tooltip>
+              </Box>
+              <Box
+                pt={"0.5rem"}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+              >
+                <Box display={"flex"} alignItems={"center"} gap={"0.6rem"}>
+                  <Text fontSize={"1.2rem"} fontWeight={"500"}>
+                    {"₹" + (bookDPrice == 0 ? bookPrice : bookDPrice)}
+                  </Text>
+                  {bookDPrice != bookPrice && (
+                    <Text fontSize={"0.8rem"} color={"grey"} fontWeight={"400"}>
+                      <strike>{"₹" + bookPrice}</strike>
+                    </Text>
+                  )}
+                </Box>
+                {bookDPrice != bookPrice && (
+                  <Box>
+                    <Tag size={"sm"} variant="solid" bgColor="#E8FFF3">
+                      <Text
+                        fontSize={"0.68rem"}
+                        color={"#26A541"}
+                        fontWeight={"600"}
+                        p={"0.3rem 0.2rem 0.3rem 0.2rem"}
+                      >
+                        {Math.round(100 - (bookDPrice * 100) / bookPrice) +
+                          "% off"}
+                      </Text>
+                    </Tag>
+                  </Box>
                 )}
               </Box>
-              {bookDPrice != bookPrice && (
-                <Box>
-                  <Tag size={"sm"} variant="solid" bgColor="#E8FFF3">
-                    <Text
-                      fontSize={"0.68rem"}
-                      color={"#26A541"}
-                      fontWeight={"600"}
-                      p={"0.3rem 0.2rem 0.3rem 0.2rem"}
-                    >
-                      {Math.round(100 - (bookDPrice * 100) / bookPrice) +
-                        "% off"}
-                    </Text>
-                  </Tag>
-                </Box>
-              )}
-            </Box>
-            <Box
-              mt={"1rem"}
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-            >
-              <Tag variant={"solid"} size={"sm"} bgColor={"#EEF5FF"}>
-                <Text
-                  fontSize={"0.7rem"}
-                  color={"#5FBDFF"}
-                  fontWeight={"600"}
-                  p={"0.3rem 0.2rem 0.3rem 0.2rem"}
-                >
-                  College Match
-                </Text>
-              </Tag>
-              <Button
-                size={"sm"}
-                bgColor={"#FB635D"}
-                color={"#f5f5f5"}
-                fontSize={"0.8rem"}
-                _hover={{ bgColor: "#F05941" }}
+              <Box
+                mt={"1rem"}
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
               >
-                Buy Now
-              </Button>
+                <Tag variant={"solid"} size={"sm"} bgColor={"#EEF5FF"}>
+                  <Text
+                    fontSize={"0.7rem"}
+                    color={"#5FBDFF"}
+                    fontWeight={"600"}
+                    p={"0.3rem 0.2rem 0.3rem 0.2rem"}
+                  >
+                    {bookYear + " Year"}
+                  </Text>
+                </Tag>
+                <Button
+                  size={"sm"}
+                  bgColor={"#FB635D"}
+                  color={"#f5f5f5"}
+                  fontSize={"0.8rem"}
+                  _hover={{ bgColor: "#F05941" }}
+                >
+                  Buy Now
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          </NavLink>
         </Box>
       </Box>
     </NavLink>

@@ -699,8 +699,8 @@ const BuyBook = () => {
               mb={"1rem"}
             >
               <Box>
-                <Text fontSize={"1.2rem"}>
-                  Buy Second Hand Engineering Books At Affordable Prices
+                <Text fontSize={"1.2rem"} fontWeight={'500'}>
+                  Buy Refurbished Engineering Books At Affordable Prices
                 </Text>
               </Box>
               <Box>
@@ -787,6 +787,7 @@ const BuyBook = () => {
                       bookId={book._id}
                       wishlistArr={wishlistArr}
                       key={book._id}
+                      bookYear = {book.year}
                     />
                   );
                 })}

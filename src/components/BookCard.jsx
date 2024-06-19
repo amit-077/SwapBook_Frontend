@@ -29,7 +29,7 @@ const BookCard = ({ name, price, img }) => {
         <Box ml={"1rem"} mt={"0.3rem"}>
           <Text fontSize={"1.2rem"}>₹ {price}</Text>
         </Box>
-        <Box mr={"1rem"} textAlign={"right"}>
+        <Box mr={"1rem"} textAlign={"right"} >
           <Button size={"sm"} colorScheme="blue">
             Buy Now
           </Button>

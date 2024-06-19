@@ -14,13 +14,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import url from "../constant";
 import ImageBox from "./utils/ImageBox";
 import Loader from "./utils/Loader";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import ItemCard from "./ItemCard";
+import { UserContext } from "../Context/ContextAPI";
 
 const Book = () => {
   let { bookId } = useParams();
@@ -31,12 +32,13 @@ const Book = () => {
   const [deliveryAvailable, setDeliveryAvailable] = useState(null);
   const [similarBooks, setSimilarBooks] = useState([]);
   const [similarBooksLoading, setSimilarBooksLoading] = useState(false);
+  const { user, setUser, cart, setCart } = useContext(UserContext);
+  const navigation = useNavigate();
 
   const getBook = async (bookId) => {
     try {
       setLoading(true);
       let { data } = await axios.post(`${url}/getSingleBook`, { bookId });
-      console.log(data);
       setBook(data);
     } catch (e) {
       console.log(e);
@@ -57,7 +59,6 @@ const Book = () => {
         year,
         currId,
       });
-      console.log(data);
       setSimilarBooks(data);
     } catch (e) {
       console.log(e);
@@ -107,6 +108,22 @@ const Book = () => {
   };
 
   let regex = /^[a-zA-Z]+$/;
+
+  const [addToCartLoading, setAddToCartLoading] = useState(false);
+
+  const addToCart = async () => {
+    console.log(book);
+    try {
+      let data = await axios.post(
+        `${url}/addToCart`,
+        { book },
+        { withCredentials: true }
+      );
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   if (loading) {
     return (
@@ -167,7 +184,7 @@ const Book = () => {
               </Box>
 
               {/* sub stack right side */}
-              <Box w={"80%"} h={"100%"} border={"0.1px solid #e8e8e8"}>
+              <Box w={"80%"} h={"27rem"} border={"0.1px solid #e8e8e8"}>
                 {book && book.image && book.image[0] && (
                   <Image
                     w={"100%"}
@@ -263,47 +280,99 @@ const Book = () => {
               {/* Book Year */}
               <Tag
                 size={"md"}
-                variant="solid"
-                bgColor={"#fa827d"}
+                // variant="solid"
+                // bgColor={"#fa827d"}
                 cursor={"default"}
                 transition={"0.4s all"}
-                _hover={{ bgColor: "rgba(251,99,93,0.93)" }}
               >
                 {book?.year} Year
               </Tag>
               <Tag
                 size={"md"}
-                variant="solid"
-                bgColor={"#fa827d"}
+                // variant="solid"
+                // bgColor={"#fa827d"}
                 cursor={"default"}
                 transition={"0.4s all"}
-                _hover={{ bgColor: "rgba(251,99,93,0.93)" }}
               >
                 {book?.branch} Engineering
               </Tag>
             </Box>
 
             {/* Buy Now Button */}
-            <Box mt={"1.5rem"} fontSize={"1.1rem"}>
-              <Button
-                display={"flex"}
-                alignItems={"center"}
-                gap={"0.5rem"}
-                bgColor={"#fb635d"}
-                color={"#f5f5f5"}
-                pl={"2.5rem"}
-                pr={"2.5rem"}
-                pt={"1.4rem"}
-                pb={"1.4rem"}
-                _hover={{
-                  bgColor: "#fa4d4d",
-                }}
-              >
-                <Text fontSize={"0.9rem"}>
-                  <i class="fa-solid fa-cart-shopping"></i>
-                </Text>
-                <Text>Buy Now</Text>
-              </Button>
+            <Box display={"flex"} alignItems={"center"} gap={"1rem"}>
+              <Box mt={"1.5rem"} fontSize={"1.1rem"}>
+                <Button
+                  display={"flex"}
+                  alignItems={"center"}
+                  gap={"0.5rem"}
+                  bgColor={"#f5ffff"}
+                  border={"1.5px solid #fb635d"}
+                  color={"#fb635d"}
+                  pl={"1.5rem"}
+                  pr={"1.5rem"}
+                  pt={"1.4rem"}
+                  pb={"1.4rem"}
+                  _hover={{
+                    bgColor: "#fff",
+                  }}
+                  onClick={() => {
+                    addToCart();
+                    if (cart?.includes(book._id)) {
+                      let newCart = cart.filter((b) => {
+                        return b !== book._id;
+                      });
+                      setCart(newCart);
+                    } else {
+                      setCart((prevVal) => {
+                        return [...prevVal, book._id];
+                      });
+                    }
+                  }}
+                >
+                  <Text fontSize={"0.9rem"}>
+                    {cart?.includes(book._id) ? (
+                      <i class="fa-solid fa-check"></i>
+                    ) : (
+                      <i class="fa-solid fa-cart-shopping"></i>
+                    )}
+                  </Text>
+                  <Text>
+                    {cart?.includes(book._id) ? "Added to cart" : "Add to cart"}
+                  </Text>
+                </Button>
+              </Box>
+              <Box mt={"1.5rem"} fontSize={"1.1rem"}>
+                <Button
+                  display={"flex"}
+                  alignItems={"center"}
+                  gap={"0.5rem"}
+                  bgColor={"#fb635d"}
+                  color={"#f5f5f5"}
+                  pl={"2rem"}
+                  pr={"2rem"}
+                  pt={"1.4rem"}
+                  pb={"1.4rem"}
+                  isLoading={addToCartLoading}
+                  _hover={{
+                    bgColor: "#fa4d4d",
+                  }}
+                  onClick={async () => {
+                    setAddToCartLoading(true);
+                    await addToCart();
+                    setAddToCartLoading(false);
+
+                    setCart((prevVal) => {
+                      return [...prevVal, book];
+                    });
+                    navigation("/cart");
+                  }}
+                >
+                  <Text fontSize={"0.9rem"}>
+                    <i class="fa-solid fa-cart-shopping"></i>
+                  </Text>
+                  <Text>Buy Now</Text>
+                </Button>
+              </Box>
             </Box>
             {/* Check Delivery */}
             <Box mt={"2.5rem"}>
@@ -412,6 +481,7 @@ const Book = () => {
                 bookImg={book.image}
                 bookId={book._id}
                 key={book._id}
+                bookYear={book.year}
               />
             );
           })}

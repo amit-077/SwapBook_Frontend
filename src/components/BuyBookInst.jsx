@@ -7,8 +7,8 @@ const BuyBookInst = ({ buy }) => {
       w={"100%"}
       textAlign={"center"}
       pt={"2.5rem"}
-      pl={"7rem"}
-      pr={"7rem"}
+      pl={{ lg: "7rem", md: "4rem", base: "1rem" }}
+      pr={{ lg: "7rem", md: "4rem", base: "1rem" }}
       bgColor={buy ? "#f5ffff" : "#f5ffff"}
       pb={"5rem"}
     >
@@ -66,7 +66,10 @@ const BuyBookInst = ({ buy }) => {
         )}
       </Box>
       <Box mt={"1.5rem"}>
-        <Text color={"#555"} fontSize={"1.15rem"}>
+        <Text
+          color={"#555"}
+          fontSize={{ lg: "1.15rem", md: "4rem", base: "0.9rem" }}
+        >
           Unlock the value in your old books with ease and turn them into cash
           on BookSwap.
         </Text>
@@ -75,11 +78,14 @@ const BuyBookInst = ({ buy }) => {
       <Box
         mt={"3rem"}
         display={"flex"}
-        justifyContent={"space-between"}
+        gap={{ lg: "0", md: "1rem", base: "2rem" }}
+        flexWrap={{ base: "wrap", md: "wrap", lg: "no-wrap" }}
+        justifyContent={{ lg: "space-between", md: "center", base: "center" }}
         position={"relative"}
       >
         {/* left arrow */}
         <Box
+          display={{ lg: "block", md: "none", base: "none" }}
           position={"absolute"}
           left={"16.8rem"}
           top={"9rem"}
@@ -90,6 +96,7 @@ const BuyBookInst = ({ buy }) => {
         </Box>
         {/* right arrow */}
         <Box
+          display={{ lg: "block", md: "none", base: "none" }}
           position={"absolute"}
           left={"41.4rem"}
           top={"6rem"}

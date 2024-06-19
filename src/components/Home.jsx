@@ -35,7 +35,10 @@ const Home = () => {
 
   const getAllBooks = async () => {
     try {
-      let { data } = await axios.get(`${url}/getAllBooks`);
+      let { data } = await axios.get(`${url}/getNearestBooks`, {
+        withCredentials: true,
+      });
+      console.log(data);
       setBooks(data);
       setBackupBooks(data);
     } catch (e) {
@@ -55,21 +58,28 @@ const Home = () => {
       fontFamily={"Poppins"}
       bgColor={"#f5ffff"}
     >
-      <Box w={"100%"} position={"relative"} mt={"5rem"}>
+      <Box
+        w={"100%"}
+        position={"relative"}
+        mt={{ base: "8rem", md: "3rem", lg: "5rem" }}
+      >
         <Box>
           <HStack w={"100%"} justifyContent={"left"}>
             {/* Text */}
-            <VStack w={"60%"} pl={"6.3rem"}>
-              <Box w={"100%"} pr={"5rem"}>
+            <VStack
+              w={{ base: "100%", md: "100%", lg: "60%" }}
+              pl={{ base: "1rem", md: "3rem", lg: "6.3rem" }}
+            >
+              <Box w={"100%"} pr={{ base: "2rem", md: "3rem", lg: "5rem" }}>
                 <Box>
                   <Text
-                    fontSize={"3.5rem"}
-                    fontWeight={"400"}
+                    fontSize={{ base: "2.5rem", md: "0", lg: "3rem" }}
+                    fontWeight={"600"}
                     display={"inline-block"}
                   >
                     Buy and sell your college books for the best{" "}
                     <Text display={"inline-block"} color={"#fb635d"}>
-                      price.
+                      price
                     </Text>
                   </Text>
                 </Box>
@@ -81,19 +91,29 @@ const Home = () => {
                   </Text>
                 </Box>
                 <Box mt={"2rem"}>
-                  <Box display={"flex"} gap={"5rem"}>
-                    <Button
-                      bgColor={"#fb635d"}
-                      p={"1.5rem 1.8rem 1.5rem 1.8rem"}
-                      borderRadius={"2rem"}
-                      color={"#f5ffff"}
-                      _hover={{
-                        bgColor: "#ff504a",
-                      }}
-                    >
-                      <i className="fa-solid fa-magnifying-glass"></i>
-                      &nbsp;&nbsp;Search Book
-                    </Button>
+                  <Box
+                    display={"flex"}
+                    gap={{ lg: "5rem", md: "3rem", base: "1rem" }}
+                  >
+                    <NavLink to={"/buy-book"}>
+                      <Button
+                        bgColor={"#fb635d"}
+                        p={{
+                          lg: "1.5rem 1.8rem 1.5rem 1.8rem",
+                          md: "1.5rem 1.8rem 1.5rem 1.8rem",
+                          base: "1rem 1.5rem 1rem 1.5rem",
+                        }}
+                        fontSize={{ lg: "1rem", md: "0.8rem", base: "0.7rem" }}
+                        borderRadius={"2rem"}
+                        color={"#f5ffff"}
+                        _hover={{
+                          bgColor: "#ff504a",
+                        }}
+                      >
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                        &nbsp;&nbsp;Search Book
+                      </Button>
+                    </NavLink>
 
                     <Box
                       display={"flex"}
@@ -105,6 +125,7 @@ const Home = () => {
                           .getElementById("sellOldBooks")
                           .scrollIntoView({ behavior: "smooth" });
                       }}
+                      fontSize={{ lg: "1rem", md: "0.8rem", base: "0.8rem" }}
                     >
                       <Text
                         color={"#fb635d"}
@@ -122,7 +143,10 @@ const Home = () => {
               </Box>
             </VStack>
             {/* Image */}
-            <VStack w={"40%"}>
+            <VStack
+              w={"40%"}
+              display={{ lg: "block", md: "none", base: "none" }}
+            >
               <Box position={"relative"}>
                 <Box
                   position={"relative"}
@@ -159,11 +183,18 @@ const Home = () => {
         </Box>
 
         <Box w={"100%"} pl={"5rem"} pr={"5rem"}>
-          <Box w={"100%"} mt={"2rem"} mb={"2rem"}>
-            <Text>Newly Added Books</Text>
+          <Box
+            w={"100%"}
+            mt={"2rem"}
+            mb={"2rem"}
+            display={{ lg: "block", md: "none", base: "none" }}
+          >
+            <Text fontSize={"1.1rem"} fontWeight={"400"} color={"#808585"}>
+              Newly Added Books
+            </Text>
           </Box>
           {/* Newly added Books */}
-          <Box>
+          <Box display={{ lg: "block", md: "none", base: "none" }}>
             <Carousel
               responsive={responsive}
               infinite={true}
@@ -186,13 +217,17 @@ const Home = () => {
         w={"100%"}
         bgColor={"#fb635d"}
         mt={"4rem"}
-        pt={"2rem"}
-        pb={"2rem"}
-        pl={"10rem"}
+        pt={"3rem"}
+        pb={"3rem"}
+        pl={{ lg: "6rem", md: "4rem", base: "2rem" }}
         color={"#f5ffff"}
       >
         <Box>
-          <Text fontSize={"1.5rem"} fontWeight={"600"} color={"#f5ffff"}>
+          <Text
+            fontSize={{ lg: "1.5rem", md: "1.3rem", base: "1rem" }}
+            fontWeight={"600"}
+            color={"#f5ffff"}
+          >
             Do you have a pile of secondhand college books that could be of
             great help to your juniors?
           </Text>
@@ -204,7 +239,13 @@ const Home = () => {
           </Text>
         </Box>
 
-        <Box display={"flex"} gap={"1rem"} alignItems={"center"} mt={"2rem"}>
+        <Box
+          display={"flex"}
+          gap={"1rem"}
+          alignItems={{ lg: "center", md: "left", base: "left" }}
+          mt={"2rem"}
+          flexDir={{ lg: "row", md: "column", base: "column" }}
+        >
           <Text fontSize={"1.2rem"} fontWeight={"400"} id="sellOldBooks">
             "Unlock the value of your secondhand college books – sell them and
             assist other students!"
@@ -219,12 +260,134 @@ const Home = () => {
       <BuyBookInst buy={true} />
       <Box
         w={"100%"}
-        h={"10rem"}
+        h={"12rem"}
         bgColor={"#F5F8FA"}
         display={"flex"}
         justifyContent={"center"}
       >
-        <Text fontSize={"3rem"}>Footer</Text>
+        {/* Footer */}
+        <Box
+          w={"100%"}
+          display={"flex"}
+          justifyContent={"space-around"}
+          pt={"1.5rem"}
+          bgColor={"#333"}
+          color={"#f5f5f5"}
+          pb={"1.5rem"}
+        >
+          <Box display={"flex"} flexDir={"column"} gap={"0.5rem"}>
+            <Text
+              fontWeight={"600"}
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+            >
+              ABOUT US{" "}
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              mt={"0.3rem"}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              About us
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              Contact Us
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              Blog
+            </Text>
+          </Box>
+          <Box display={"flex"} flexDir={"column"} gap={"0.5rem"}>
+            <Text
+              fontWeight={"600"}
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+            >
+              USEFUL LINKS
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              mt={"0.3rem"}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              How it works?
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              Clankart Teleport
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              Frequently Asked Questions (FAQs)
+            </Text>
+            <Text
+              fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+              cursor={"pointer"}
+              _hover={{
+                color: "#fb635d",
+              }}
+            >
+              Terms Of Use / Listing Policy / Privacy Policy
+            </Text>
+          </Box>
+          <Box
+            display={{ base: "none", md: "flex", lg: "flex" }}
+            flexDir={"column"}
+            gap={"0.5rem"}
+            fontSize={{ lg: "0.9rem", md: "0.7rem", base: "0.7rem" }}
+          >
+            <Text fontWeight={"600"}>STAY CONNECTED</Text>
+            <Box display={"flex"} gap={"1.5rem"} mt={"0.3rem"}>
+              <Text
+                fontSize={{ lg: "1.5rem", md: "0.7rem", base: "1rem" }}
+                cursor={"pointer"}
+                _hover={{ color: "#139CF7" }}
+              >
+                <i class="fa-brands fa-facebook"></i>
+              </Text>
+              <Text
+                fontSize={{ lg: "1.5rem", md: "0.7rem", base: "1rem" }}
+                cursor={"pointer"}
+                _hover={{ color: "#E94B52" }}
+              >
+                <i class="fa-brands fa-instagram"></i>
+              </Text>
+              <Text
+                fontSize={{ lg: "1.5rem", md: "0.7rem", base: "1rem" }}
+                cursor={"pointer"}
+                _hover={{ color: "#F60002" }}
+              >
+                <i class="fa-brands fa-youtube"></i>
+              </Text>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

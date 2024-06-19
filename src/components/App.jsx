@@ -8,6 +8,8 @@ import BuyBook from "./BuyBook";
 import Wishlist from "./Wishlist";
 import MyBooks from "./MyBooks";
 import Book from "./Book";
+import Cart from "./Cart";
+import MyOrders from "./MyOrders";
 
 const App = () => {
   return (
@@ -55,6 +57,24 @@ const App = () => {
             <>
               <Navbar />
               <MyBooks />
+            </>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <>
+              <Navbar />
+              <Cart />
+            </>
+          }
+        />
+        <Route
+          path="/my-orders"
+          element={
+            <>
+              <Navbar />
+              <MyOrders/>
             </>
           }
         />

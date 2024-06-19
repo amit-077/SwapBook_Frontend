@@ -11,7 +11,9 @@ const MyBooks = () => {
     const getMyBooks = async () => {
       try {
         console.log("Called");
-        const { data } = await axios.get(`${url}/getMyBooks`);
+        const { data } = await axios.get(`${url}/getMyBooks`, {
+          withCredentials: true,
+        });
         setMyBooksArr(data);
       } catch (e) {
         console.log(e);
@@ -68,6 +70,7 @@ const MyBooks = () => {
               bookId={book._id}
               wishlistArr={myBooksArr}
               key={book._id}
+              bookYear={book?.year}
               //   liked={true} // bcoz wishlisted things are always liked.
               hideLike={true}
             />
